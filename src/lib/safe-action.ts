@@ -24,17 +24,16 @@ function shapeErrors({ err }: any) {
   }
 }
 
-// export const authenticatedAction = createServerActionProcedure()
-//   .experimental_shapeError(shapeErrors)
-//   .handler(async () => {
-//     const user = await assertAuthenticated();
-//     await rateLimitByKey({
-//       key: `${user.id}-global`,
-//       limit: 10,
-//       window: 10000,
-//     });
-//     return { user };
-//   });
+export const authenticatedAction = (userId: string) =>
+  createServerActionProcedure()
+    .experimental_shapeError(shapeErrors)
+    .handler(async () => {
+      await rateLimitByKey({
+        key: `${userId}-global`,
+        limit: 10,
+        window: 10000,
+      });
+    });
 
 export const unauthenticatedAction = createServerActionProcedure()
   .experimental_shapeError(shapeErrors)

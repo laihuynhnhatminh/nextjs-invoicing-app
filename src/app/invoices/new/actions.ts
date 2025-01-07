@@ -2,8 +2,8 @@
 
 import { redirect } from 'next/navigation';
 
-import { rateLimitByKey } from '@/lib/limiter';
-import { unauthenticatedAction } from '@/lib/safe-action';
+import { validateUserAction } from '@/actions/auth';
+import { authenticatedAction } from '@/lib/safe-action';
 import { createInvoiceUseCase } from '@/use-cases/invoices';
 
 import { createInvoiceSchema } from './validations';
@@ -11,10 +11,15 @@ import { createInvoiceSchema } from './validations';
 export const createInvoiceAction = async (
   formData: FormData,
 ): Promise<void> => {
+  const userId = await validateUserAction();
   const value = Number(formData.get('value'));
   const description = formData.get('description') as string;
 
-  const [data, error] = await handleSafeInvoiceAction({ value, description });
+  const [data, error] = await handleSafeInvoiceAction(userId)({
+    value,
+    description,
+    userId,
+  });
 
   if (error) {
     console.error(error);
@@ -25,12 +30,8 @@ export const createInvoiceAction = async (
   }
 };
 
-const handleSafeInvoiceAction = unauthenticatedAction
-  .createServerAction()
-  .input(createInvoiceSchema)
-  .handler(async ({ input }) => {
-    await rateLimitByKey({
-      key: `create-invoice`,
-    });
-    return await createInvoiceUseCase(input);
-  });
+const handleSafeInvoiceAction = (userId: string) =>
+  authenticatedAction(userId)
+    .createServerAction()
+    .input(createInvoiceSchema)
+    .handler(async ({ input }) => createInvoiceUseCase(input));

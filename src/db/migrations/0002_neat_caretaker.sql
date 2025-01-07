@@ -1,0 +1,1 @@
+ALTER TABLE "invoices" ADD COLUMN "fullName" text NOT NULL;

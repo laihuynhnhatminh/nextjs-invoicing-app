@@ -4,7 +4,7 @@ export default function Home() {
       <h1 className="text-5xl font-bold">Invoicipedia</h1>
       <div>
         <div>
-          <h1>Index Route</h1>
+          <h1>Invoice Application</h1>
         </div>
       </div>
     </main>

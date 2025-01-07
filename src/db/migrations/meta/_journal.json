@@ -8,6 +8,27 @@
       "when": 1736071268330,
       "tag": "0000_magenta_slyde",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1736262880510,
+      "tag": "0001_faithful_firelord",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1736263360737,
+      "tag": "0002_neat_caretaker",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1736263613574,
+      "tag": "0003_happy_rocket_racer",
+      "breakpoints": true
     }
   ]
 }

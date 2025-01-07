@@ -1,7 +1,7 @@
 import {
   createInvoice,
   getInvoiceById,
-  getInvoices,
+  getInvoicesByUserId,
 } from '@/data-access/invoices';
 import type { InvoiceInsert, InvoiceSelect } from '@/db/schema';
 
@@ -11,8 +11,10 @@ export async function createInvoiceUseCase(
   return createInvoice(invoice);
 }
 
-export async function getInvoicesUseCase(): Promise<InvoiceSelect[]> {
-  return getInvoices();
+export async function getInvoicesByUserIdUseCase(
+  userId: string,
+): Promise<InvoiceSelect[]> {
+  return getInvoicesByUserId(userId);
 }
 
 export async function getInvoiceByIdUseCase(

@@ -1,11 +1,13 @@
 'use server';
 
+import { validateUserAction } from '@/actions/auth';
 import { InvoiceSelect } from '@/db/schema';
-import { unauthenticatedAction } from '@/lib/safe-action';
-import { getInvoicesUseCase } from '@/use-cases/invoices';
+import { authenticatedAction } from '@/lib/safe-action';
+import { getInvoicesByUserIdUseCase } from '@/use-cases/invoices';
 
 export const getInvoicesAction = async (): Promise<InvoiceSelect[]> => {
-  const [data, error] = await handleSafeInvoiceAction();
+  const userId = await validateUserAction();
+  const [data, error] = await handleSafeInvoiceAction(userId)();
 
   if (error) {
     console.error(error);
@@ -15,6 +17,7 @@ export const getInvoicesAction = async (): Promise<InvoiceSelect[]> => {
   return data;
 };
 
-const handleSafeInvoiceAction = unauthenticatedAction
-  .createServerAction()
-  .handler(async () => getInvoicesUseCase());
+const handleSafeInvoiceAction = (userId: string) =>
+  authenticatedAction(userId)
+    .createServerAction()
+    .handler(async () => getInvoicesByUserIdUseCase(userId));

@@ -12,8 +12,14 @@ export async function createInvoice(invoice: InvoiceInsert): Promise<number> {
   return res[0].id;
 }
 
-export async function getInvoices(): Promise<InvoiceSelect[]> {
-  return db.select().from(invoices).execute();
+export async function getInvoicesByUserId(
+  userId: string,
+): Promise<InvoiceSelect[]> {
+  return db
+    .select()
+    .from(invoices)
+    .where(eq(invoices.userId, userId))
+    .execute();
 }
 
 export async function getInvoiceById(
