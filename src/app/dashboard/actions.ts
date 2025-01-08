@@ -5,9 +5,9 @@ import { InvoiceSelect } from '@/db/schema';
 import { authenticatedAction } from '@/lib/safe-action';
 import { getInvoicesByUserIdUseCase } from '@/use-cases/invoices';
 
-export const getInvoicesAction = async (): Promise<InvoiceSelect[]> => {
+export const getInvoicesByUserIdAction = async (): Promise<InvoiceSelect[]> => {
   const userId = await validateUserAction();
-  const [data, error] = await handleSafeInvoiceAction(userId)();
+  const [data, error] = await handleSafeInvoicesByUserIdAction(userId)();
 
   if (error) {
     console.error(error);
@@ -17,7 +17,7 @@ export const getInvoicesAction = async (): Promise<InvoiceSelect[]> => {
   return data;
 };
 
-const handleSafeInvoiceAction = (userId: string) =>
+const handleSafeInvoicesByUserIdAction = (userId: string) =>
   authenticatedAction(userId)
     .createServerAction()
     .handler(async () => getInvoicesByUserIdUseCase(userId));

@@ -14,10 +14,10 @@ import {
 } from '@/components/ui/table';
 import { cn } from '@/lib/utils';
 
-import { getInvoicesAction } from './actions';
+import { getInvoicesByUserIdAction } from './actions';
 
 export default async function DashboardPage() {
-  const invoices = await getInvoicesAction();
+  const invoices = await getInvoicesByUserIdAction();
 
   return (
     <main>

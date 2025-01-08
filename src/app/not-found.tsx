@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 
 export default function NotFoundPage() {
   return (
-    <main className="mx-auto my-12 min-h-svh max-w-4xl justify-center xl:max-w-5xl">
+    <main className="mx-auto my-12 max-w-4xl content-center justify-center xl:max-w-5xl">
       <div className="mb-8 flex justify-between">
         <h1 className="text-3xl font-bold">Resources not found!</h1>
       </div>
