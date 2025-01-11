@@ -30,7 +30,7 @@ export default async function InvoicePage({ params, searchParams }: Props) {
 
   const isSuccess = status === 'success';
   const isCancelled = status === 'cancelled';
-  let isError = (isSuccess || isCancelled) && !session_id;
+  let isError = isSuccess && !session_id;
 
   if (isSuccess && session_id) {
     const { status: paymentStatus } = await updateInvoiceSuccessStatusAction(
