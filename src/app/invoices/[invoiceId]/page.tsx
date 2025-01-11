@@ -11,15 +11,15 @@ type Props = Readonly<{
 
 export default async function InvoicePage({ params }: Props) {
   const { invoiceId } = await params;
-  const invoice = await getUserInvoiceByIdAction(invoiceId);
+  const data = await getUserInvoiceByIdAction(invoiceId);
 
-  if (!invoice) {
+  if (!data) {
     notFound();
   }
 
   return (
     <main>
-      <Invoice invoice={invoice} />
+      <Invoice invoice={data} />
     </main>
   );
 }

@@ -1,4 +1,5 @@
 import {
+  OrganizationSwitcher,
   SignedIn,
   SignedOut,
   SignInButton,
@@ -18,9 +19,19 @@ export default async function Header() {
     <header className="mb-12 mt-8">
       <Container>
         <div className="flex items-center justify-between gap-4">
-          <p className="text-2xl font-bold">
-            <Link href={user ? '/dashboard' : '/'}>Invoicipedia</Link>
-          </p>
+          <div className="flex items-center gap-2">
+            <p className="text-xl font-bold">
+              <Link href={user ? '/dashboard' : '/'}>Invoicipedia</Link>
+            </p>
+            <span className="text-xl text-slate-400">/</span>
+            <span className="-ml-2">
+              <SignedIn>
+                <OrganizationSwitcher
+                  afterCreateOrganizationUrl={'/dashboard'}
+                />
+              </SignedIn>
+            </span>
+          </div>
           <div>
             <SignedIn>
               <UserButton />

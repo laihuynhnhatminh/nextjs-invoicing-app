@@ -57,7 +57,7 @@ export default async function DashboardPage() {
                     href={`/invoices/${invoice.id}`}
                     className="block w-full p-4 font-semibold"
                   >
-                    Minh Lai
+                    {invoice.customer.name}
                   </Link>
                 </TableCell>
                 <TableCell className="p-0 text-left">
@@ -65,7 +65,7 @@ export default async function DashboardPage() {
                     href={`/invoices/${invoice.id}`}
                     className="block w-full p-4"
                   >
-                    nhatminhwork1996@gmail.com
+                    {invoice.customer.email}
                   </Link>
                 </TableCell>
                 <TableCell className="p-0 text-center">

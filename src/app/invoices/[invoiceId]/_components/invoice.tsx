@@ -1,6 +1,12 @@
 'use client';
 
-import { ChevronDown, EllipsisIcon, Trash2Icon } from 'lucide-react';
+import {
+  ChevronDownIcon,
+  CreditCardIcon,
+  EllipsisIcon,
+  Trash2Icon,
+} from 'lucide-react';
+import Link from 'next/link';
 import { useOptimistic } from 'react';
 
 import Container from '@/components/Container';
@@ -22,7 +28,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { InvoiceSelect, StatusEnum, statusEnum } from '@/db/schema';
+import { InvoiceWithCustomer, StatusEnum, statusEnum } from '@/db/schema';
 import { cn } from '@/lib/utils';
 
 import {
@@ -31,7 +37,7 @@ import {
 } from '../actions';
 
 type InvoiceProps = Readonly<{
-  invoice: InvoiceSelect;
+  invoice: InvoiceWithCustomer;
 }>;
 
 function Invoice({ invoice }: InvoiceProps) {
@@ -74,7 +80,7 @@ function Invoice({ invoice }: InvoiceProps) {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button>
-                Change Status <ChevronDown className="h-4 w-4" />
+                Change Status <ChevronDownIcon className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent>
@@ -112,6 +118,15 @@ function Invoice({ invoice }: InvoiceProps) {
                       Delete Invoice
                     </button>
                   </DialogTrigger>
+                </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <Link
+                    href={`/invoices/${invoice.id}/payment`}
+                    className="flex w-full items-center gap-2 text-left capitalize"
+                  >
+                    <CreditCardIcon className="h-4 w-4" />
+                    Payment
+                  </Link>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -162,13 +177,13 @@ function Invoice({ invoice }: InvoiceProps) {
           <strong className="block w-28 flex-shrink-0 text-sm font-medium">
             Billing Name
           </strong>
-          <span></span>
+          <span>{invoice.customer.name}</span>
         </li>
         <li className="flex gap-4">
           <strong className="block w-28 flex-shrink-0 text-sm font-medium">
             Billing Email
           </strong>
-          <span></span>
+          <span>{invoice.customer.email}</span>
         </li>
       </ul>
     </Container>
