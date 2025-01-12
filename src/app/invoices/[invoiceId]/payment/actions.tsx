@@ -1,10 +1,12 @@
 'use server';
 
 import { redirect } from 'next/navigation';
+import { Resend } from 'resend';
 import Stripe from 'stripe';
 
 import { getOrigin } from '@/actions/header';
 import { PublicInvoiceWithCustomer } from '@/db/schema';
+import { InvoiceReceiptEmail } from '@/emails/invoice-receipt';
 import { unauthenticatedAction } from '@/lib/safe-action';
 import {
   getPublicInvoiceByIdUseCase,
@@ -16,6 +18,7 @@ import { validateStringAsNumber } from '@/utils/validation';
 import { searchInvoice, updateInvoiceStatus } from './validations';
 
 const stripe = new Stripe(String(process.env.STRIPE_SECRET));
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export const getUserPublicInvoice = async (
   id: string,
@@ -80,9 +83,10 @@ export const updateInvoiceSuccessStatusAction = async (
   status: 'success' | 'cancelled' | 'error';
 }> => {
   const invoiceId = validateStringAsNumber(id);
-  const { payment_status } = await stripe.checkout.sessions.retrieve(sessionId);
+  const { payment_status, amount_total, created } =
+    await stripe.checkout.sessions.retrieve(sessionId);
 
-  if (payment_status !== 'paid') {
+  if (payment_status !== 'paid' || !amount_total || !created) {
     return { status: 'error' };
   }
 
@@ -94,6 +98,27 @@ export const updateInvoiceSuccessStatusAction = async (
     console.error(error);
     return { status: 'error' };
   }
+
+  const [data, getError] = await handleSafeGetPublicByIdInvoice()({
+    id: invoiceId,
+  });
+
+  if (getError || !data) {
+    console.error(getError);
+    return { status: 'error' };
+  }
+
+  await resend.emails.send({
+    from: 'Himemiya Taiyou <no-reply@himemiya.dev>',
+    to: data.email,
+    subject: `Invoice payment - Invoice ${invoiceId}`,
+    react: InvoiceReceiptEmail({
+      invoiceId: invoiceId,
+      name: data.name,
+      value: amount_total,
+      date: new Date(created).toLocaleDateString(),
+    }),
+  });
 
   return { status: 'success' };
 };

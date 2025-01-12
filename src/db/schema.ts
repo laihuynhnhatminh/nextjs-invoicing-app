@@ -51,7 +51,7 @@ export type PublicInvoiceWithCustomer = Pick<
   InvoiceSelect,
   'id' | 'status' | 'value' | 'description' | 'createTs'
 > &
-  Pick<CustomerSelect, 'name'>;
+  Pick<CustomerSelect, 'name' | 'email'>;
 
 export type CustomerInsert = typeof customers.$inferInsert;
 export type CustomerSelect = typeof customers.$inferSelect;

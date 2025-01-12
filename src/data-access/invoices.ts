@@ -125,6 +125,7 @@ export async function getPublicInvoiceById(
       value: invoices.value,
       description: invoices.description,
       createTs: invoices.createTs,
+      email: customers.email,
       name: customers.name,
     })
     .from(invoices)

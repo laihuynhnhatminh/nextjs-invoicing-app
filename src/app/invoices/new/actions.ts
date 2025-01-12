@@ -1,14 +1,18 @@
 'use server';
 
 import { redirect } from 'next/navigation';
+import { Resend } from 'resend';
 
 import { validateUserAction } from '@/actions/auth';
+import { InvoicePaymentEmail } from '@/emails/invoice-created';
 import { authenticatedAction } from '@/lib/safe-action';
 import { getCustomerUseCase } from '@/use-cases/customers';
 import { createInvoiceUseCase } from '@/use-cases/invoices';
 import { validateStringAsNumber } from '@/utils/validation';
 
 import { createInvoiceSchema } from './validations';
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export const createInvoiceAction = async (
   formData: FormData,
@@ -19,7 +23,7 @@ export const createInvoiceAction = async (
   const value = validateStringAsNumber(formData.get('value') as string);
   const description = formData.get('description') as string;
 
-  const [data, error] = await handleSafeInvoiceAction(userId)({
+  const [data, error] = await handleSafeCreateInvoiceAction(userId)({
     value,
     description,
     userId,
@@ -33,11 +37,18 @@ export const createInvoiceAction = async (
   }
 
   if (data) {
+    await resend.emails.send({
+      from: 'Himemiya Taiyou <no-reply@himemiya.dev>',
+      to: email,
+      subject: `You have a new Invoice - Invoice ${data}`,
+      react: InvoicePaymentEmail({ invoiceId: data }),
+    });
+
     redirect(`/invoices/${data}`);
   }
 };
 
-const handleSafeInvoiceAction = (userId: string) =>
+const handleSafeCreateInvoiceAction = (userId: string) =>
   authenticatedAction(userId)
     .createServerAction()
     .input(createInvoiceSchema)
